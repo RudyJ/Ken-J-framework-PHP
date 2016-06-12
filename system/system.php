@@ -1,20 +1,19 @@
 ﻿<?php
-	
-	/*
-	URLs :
-	
-	www.site.com/controller/action/params
-	
-	
-	*/
-	
-	class System{
-		
+/**
+ * Copyright (c) All Rights Reserved.
+ * Author : InnoZone Solutions
+ * Team : Rudy Jordache  | Anderson Luiz | Dagoberto Pereira Jr
+ *
+ */
+
+class System{
+
+		public  $_raiz;
 		private $_url;
 		private $_explode;
-		public $_controller;
-		public $_action;
-		public $_params;
+		public  $_controller;
+		public  $_action;
+		public  $_params;
 		
 		public function __construct(){
 			$this->setUrl();
@@ -23,14 +22,22 @@
 			$this->setAction();
 			$this->setParams();
             //$this->validaSession(); // Configurar nome da $_SESSION
-                        
-			}
-		
+
+			/* Utilizar namespace ROOT caso o framework NÂO esteja no root do servidor ou subdomínio */
+			$script     = $_SERVER["SCRIPT_NAME"] ?? null;
+			$broken 	= explode("/", $script);
+			if($script == null || $broken[1] == "index.php"):
+				define("ROOT", "");
+			else:
+				define("ROOT", "/" . $broken[1]);
+			endif;
+			/******** fim do define ROOT *****/
+		}
 
         private function setUrl(){
-			$url	=	isset($_GET["url"])?$_GET["url"]:"index/index";
+			$url	=	$_GET["url"] ?? "index/index";
 			$this->_url	=	$url;
-			}
+		}
 		
 		private function setExplode(){
 			$this->_explode	=	explode("/", $this->_url);
@@ -93,17 +100,17 @@
 					$action	=	$this->_action;
 					$app->$action();
 					
-					}else{// SE NÃO HOUVER ARQUIVO DÁ ERRO 404
+			}else{// SE NÃO HOUVER ARQUIVO DÁ ERRO 404
 					
 					require(CONTROLLERS."notFoundControllers.php");
 					$app	=	new notFoundController();
 					$app->_404();
 								
 						
-						}
-					
-					
-					}
+			}
+
+
+		}
 		
                 
                                         
